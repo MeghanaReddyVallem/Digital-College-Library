@@ -21,7 +21,6 @@ function Login({ onLogin, onRegister, onBack }) {
         onLogin('librarian', { username: librarianUsername, password: librarianPassword });
       }
     } else {
-      // Handle registration
       if (userType === 'student') {
         if (contact.length !== 10) {
           setContactError('Contact number must be exactly 10 digits');
@@ -152,67 +151,7 @@ function Login({ onLogin, onRegister, onBack }) {
             <span style={{ fontWeight: 'bold' }}>Librarian</span>
           </label>
         </div>
-        <div style={{ marginBottom: '30px', display: 'flex', justifyContent: 'center' }}>
-          <button
-            type="button"
-            onClick={() => setIsLogin(true)}
-            style={{
-              backgroundColor: isLogin ? '#e50914' : '#333',
-              color: 'white',
-              border: 'none',
-              padding: '12px 25px',
-              marginRight: '10px',
-              cursor: 'pointer',
-              borderRadius: '25px',
-              fontWeight: 'bold',
-              transition: 'all 0.3s ease',
-              boxShadow: isLogin ? '0 0 20px rgba(229, 9, 20, 0.4)' : 'none'
-            }}
-            onMouseEnter={(e) => {
-              if (!isLogin) {
-                e.target.style.backgroundColor = '#555';
-                e.target.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.1)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isLogin) {
-                e.target.style.backgroundColor = '#333';
-                e.target.style.boxShadow = 'none';
-              }
-            }}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsLogin(false)}
-            style={{
-              backgroundColor: !isLogin ? '#e50914' : '#333',
-              color: 'white',
-              border: 'none',
-              padding: '12px 25px',
-              cursor: 'pointer',
-              borderRadius: '25px',
-              fontWeight: 'bold',
-              transition: 'all 0.3s ease',
-              boxShadow: !isLogin ? '0 0 20px rgba(229, 9, 20, 0.4)' : 'none'
-            }}
-            onMouseEnter={(e) => {
-              if (isLogin) {
-                e.target.style.backgroundColor = '#555';
-                e.target.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.1)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (isLogin) {
-                e.target.style.backgroundColor = '#333';
-                e.target.style.boxShadow = 'none';
-              }
-            }}
-          >
-            Register
-          </button>
-        </div>
+
         {userType === 'student' ? (
           <form onSubmit={handleSubmit}>
             {!isLogin && (
@@ -240,7 +179,7 @@ function Login({ onLogin, onRegister, onBack }) {
                     placeholder="Contact Number (10 digits)"
                     value={contact}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, ''); // Only allow digits
+                      const value = e.target.value.replace(/\D/g, '');
                       setContact(value);
                       if (value.length !== 10 && value.length > 0) {
                         setContactError('Contact number must be exactly 10 digits');
@@ -274,6 +213,9 @@ function Login({ onLogin, onRegister, onBack }) {
             <button type="submit" className="login-button">
               {isLogin ? 'Login as Student' : 'Register as Student'}
             </button>
+            <div style={{ textAlign: 'center', marginTop: '20px', color: '#e5e5e5' }}>
+              {isLogin ? 'New user?' : 'Already have an account?'} <span style={{ color: '#e50914', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => setIsLogin(!isLogin)}>{isLogin ? 'Register' : 'Login'}</span>
+            </div>
           </form>
         ) : (
           <form onSubmit={handleSubmit}>
@@ -316,8 +258,12 @@ function Login({ onLogin, onRegister, onBack }) {
             <button type="submit" className="login-button">
               {isLogin ? 'Login as Librarian' : 'Register as Librarian'}
             </button>
+            <div style={{ textAlign: 'center', marginTop: '20px', color: '#e5e5e5' }}>
+              {isLogin ? 'New user?' : 'Already have an account?'} <span style={{ color: '#e50914', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => setIsLogin(!isLogin)}>{isLogin ? 'Register' : 'Login'}</span>
+            </div>
           </form>
         )}
+
       </div>
     </div>
   );

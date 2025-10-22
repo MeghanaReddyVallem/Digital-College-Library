@@ -97,7 +97,7 @@ db.serialize(() => {
     if (err) console.error(err);
     if (row.count === 0) {
       const sampleBooks = [
-        { title: 'Physics', author: 'Cormen', year: 1, semester: 1, copies: 5, cover: 'https://unsplash.com/s/photos/physics-book' },
+        { title: 'Physics', author: 'Cormen', year: 1, semester: 1, copies: 5, cover: 'https://via.placeholder.com/200x300?text=Physics' },
         { title: 'Data Structures', author: 'Sedgewick', year: 1, semester: 2, copies: 3, cover: 'https://via.placeholder.com/200x300?text=Data+Structures' },
         { title: 'Database System Concepts', author: 'Silberschatz', year: 2, semester: 1, copies: 4, cover: 'https://via.placeholder.com/200x300?text=Database' },
         { title: 'Operating Systems', author: 'Tanenbaum', year: 2, semester: 2, copies: 2, cover: 'https://via.placeholder.com/200x300?text=OS' },
@@ -214,7 +214,7 @@ app.post('/api/borrow', (req, res) => {
 
 // Get borrowed books with book title
 app.get('/api/borrowed', (req, res) => {
-  const sql = `SELECT bb.id, b.title as bookTitle, s.name as studentName, s.hall_ticket as hallTicket, bb.borrow_date as borrowDate
+  const sql = `SELECT bb.id, b.title as bookTitle, s.name as studentName, s.hall_ticket as hallTicket, DATE(bb.borrow_date) as borrowDate
                FROM borrowed_books bb
                JOIN books b ON bb.book_id = b.id
                JOIN students s ON bb.student_id = s.id`;
@@ -395,7 +395,7 @@ app.get('/api/analytics', (req, res) => {
       if (err) return res.status(500).json({ success: false, message: err.message });
       db.get('SELECT COUNT(*) as totalBorrowed FROM borrowed_books', [], (err, borrowedRow) => {
         if (err) return res.status(500).json({ success: false, message: err.message });
-        db.get('SELECT COUNT(*) as totalHistory FROM borrow_history', [], (err, historyRow) => {
+        db.get('SELECT COUNT(*) as totalHistory FROM borrow_history WHERE return_date IS NOT NULL', [], (err, historyRow) => {
           if (err) return res.status(500).json({ success: false, message: err.message });
           db.all('SELECT b.title as bookTitle, COUNT(bh.book_id) as borrowCount FROM borrow_history bh JOIN books b ON bh.book_id = b.id GROUP BY bh.book_id HAVING borrowCount >= 4 ORDER BY borrowCount DESC LIMIT 5', [], (err, mostBorrowed) => {
             if (err) return res.status(500).json({ success: false, message: err.message });

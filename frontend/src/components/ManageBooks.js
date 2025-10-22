@@ -9,7 +9,7 @@ function ManageBooks() {
   useEffect(() => {
     fetch('/api/books')
       .then(res => res.json())
-      .then(data => setBooks(data));
+      .then(data => setBooks(data || []));
   }, []);
 
   const handleSubmit = (e) => {
@@ -62,7 +62,7 @@ function ManageBooks() {
 
   const editBook = (book) => {
     setEditingBook(book);
-    setNewBook({ title: book.title, author: book.author, year: book.year, semester: book.semester, copies: book.copies, cover: book.cover });
+    setNewBook({ title: book.title, author: book.author, year: book.year, semester: book.semester, copies: book.copies, cover: book.cover_url || book.cover });
   };
 
   const deleteBook = (id) => {
@@ -81,47 +81,43 @@ function ManageBooks() {
 
   return (
     <div>
-      <h3>Manage Books</h3>
-      <form onSubmit={handleSubmit} style={{ marginBottom: '30px' }}>
-        <div className="form-group">
+      <h3 style={{ textAlign: 'center' }}>Manage Books</h3>
+      <form onSubmit={handleSubmit} style={{ marginBottom: '30px', textAlign: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
           <input
             type="text"
             placeholder="Title"
             value={newBook.title}
             onChange={e => setNewBook({ ...newBook, title: e.target.value })}
             required
+            style={{ width: '300px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
-        </div>
-        <div className="form-group">
           <input
             type="text"
             placeholder="Author"
             value={newBook.author}
             onChange={e => setNewBook({ ...newBook, author: e.target.value })}
             required
+            style={{ width: '300px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
-        </div>
-        <div className="form-group">
           <select
             value={newBook.year}
             onChange={e => setNewBook({ ...newBook, year: parseInt(e.target.value) })}
+            style={{ width: '300px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           >
             {[1,2,3,4].map(year => (
               <option key={year} value={year}>Year {year}</option>
             ))}
           </select>
-        </div>
-        <div className="form-group">
           <select
             value={newBook.semester}
             onChange={e => setNewBook({ ...newBook, semester: parseInt(e.target.value) })}
+            style={{ width: '300px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           >
             {[1,2].map(semester => (
               <option key={semester} value={semester}>Semester {semester}</option>
             ))}
           </select>
-        </div>
-        <div className="form-group">
           <input
             type="number"
             placeholder="Copies"
@@ -129,19 +125,21 @@ function ManageBooks() {
             onChange={e => setNewBook({ ...newBook, copies: parseInt(e.target.value) })}
             min="1"
             required
+            style={{ width: '300px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
-        </div>
-        <div className="form-group">
           <input
             type="url"
             placeholder="Cover URL"
             value={newBook.cover}
             onChange={e => setNewBook({ ...newBook, cover: e.target.value })}
             required
+            style={{ width: '300px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
           />
+          <div style={{ marginTop: '20px' }}>
+            <button type="submit">{editingBook ? 'Update Book' : 'Add Book'}</button>
+            {editingBook && <button type="button" onClick={resetForm} style={{ marginLeft: '10px' }}>Cancel</button>}
+          </div>
         </div>
-        <button type="submit">{editingBook ? 'Update Book' : 'Add Book'}</button>
-        {editingBook && <button type="button" onClick={resetForm} style={{ marginLeft: '10px' }}>Cancel</button>}
       </form>
       <h4>Existing Books</h4>
       <div style={{ marginBottom: '20px' }}>
@@ -156,7 +154,7 @@ function ManageBooks() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' }}>
         {filteredBooks.map(book => (
           <div key={book.id} style={{ backgroundColor: '#222', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
-            <img src={book.cover} alt={book.title} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px', marginBottom: '10px' }} />
+            <img src={book.cover_url || book.cover} alt={book.title} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px', marginBottom: '10px' }} />
             <h4 style={{ margin: '0 0 5px 0', color: '#e5e5e5' }}>{book.title}</h4>
             <p style={{ margin: '0 0 5px 0', color: '#ccc' }}>by {book.author}</p>
             <p style={{ margin: '0 0 10px 0', color: '#ccc' }}>Year: {book.year} | Semester: {book.semester} | Copies: {book.copies}</p>
