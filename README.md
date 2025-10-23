@@ -81,6 +81,7 @@ A comprehensive full-stack web application for managing university library opera
    ```bash
    cd frontend
    npm install
+   npm install canvas-confetti
    npm start
    ```
    App opens on `http://localhost:3000`
